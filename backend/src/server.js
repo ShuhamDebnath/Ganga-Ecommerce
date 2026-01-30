@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import authRoutes from './routes/authRoutes.js';
 
 // Initialize Environment Variables
 dotenv.config();
@@ -13,17 +14,20 @@ const PORT = process.env.PORT || 8000;
 app.use(cors()); // Allow Cross-Origin requests (crucial for KMP Web)
 app.use(express.json()); // Parse JSON bodies
 
+// Routes
+app.use('/api/v1/auth', authRoutes); 
+
 // Database Connection (Placeholder for Phase 2)
-// const connectDB = async () => {
-//   try {
-//     await mongoose.connect(process.env.MONGO_URI);
-//     console.log('✅ MongoDB Connected');
-//   } catch (error) {
-//     console.error('❌ Database Connection Error:', error);
-//     process.exit(1);
-//   }
-// };
-// connectDB();
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('✅ MongoDB Connected');
+  } catch (error) {
+    console.error('❌ Database Connection Error:', error);
+    process.exit(1);
+  }
+};
+connectDB();
 
 // Health Check Route
 app.get('/', (req, res) => {

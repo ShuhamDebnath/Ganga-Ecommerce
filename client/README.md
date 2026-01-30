@@ -1,76 +1,213 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM).
+# 🌊 Ganga - Multi-Vendor E-Commerce Ecosystem
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+<!-- Badges -->
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Compose](https://img.shields.io/badge/Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+> **A production-grade, full-stack e-commerce engine built to demonstrate System Design, Scalability, and Cross-Platform Code Sharing.**
 
-### Build and Run Android Application
+🏗️ The Engineering Challenge
+-----------------------------
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+Most e-commerce portfolios build a simple "Nike Store" clone. **Ganga** is different.It is a **Multi-Vendor System** (like Amazon) designed to handle complex business logic:
 
-### Build and Run Desktop (JVM) Application
+1.  **Unified Cart:** A user can add items from Vendor A (Electronics) and Vendor B (Clothing) to the same cart.
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+2.  **Atomic Order Splitting:** The backend intelligently splits one customer payment into multiple sub-orders, ensuring independent inventory tracking and vendor payouts.
 
-### Build and Run Web Application
+3.  **Universal UI:** The entire Frontend (Consumer App + Admin Panel) shares **95% of business logic and UI code** using Kotlin Multiplatform.
 
-To build and run the development version of the web app, use the run configuration from the run widget
-in your IDE's toolbar or run it directly from the terminal:
-- for the Wasm target (faster, modern browsers):
-  - on macOS/Linux
-    ```shell
-    ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
-    ```
-  - on Windows
-    ```shell
-    .\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
-    ```
-- for the JS target (slower, supports older browsers):
-  - on macOS/Linux
-    ```shell
-    ./gradlew :composeApp:jsBrowserDevelopmentRun
-    ```
-  - on Windows
-    ```shell
-    .\gradlew.bat :composeApp:jsBrowserDevelopmentRun
-    ```
 
-### Build and Run iOS Application
+🏛 System Architecture
+----------------------
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+The project follows a **Monorepo** structure ensuring Type Safety and Logic consistency.
 
----
+```
+graph TD
+    subgraph Clients [Compose Multiplatform]
+        Android[Consumer App (Android)]
+        iOS[Consumer App (iOS)]
+        Web[Admin/Vendor (Wasm)]
+        Desktop[Admin/Vendor (JVM)]
+    end
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+    subgraph Logic_Layer [Shared KMP Module]
+        Repo[Repositories]
+        VM[ViewModels]
+        Nav[Navigation Graph]
+        Net[Ktor Client]
+        DI[Koin DI]
+    end
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+    subgraph Backend_Layer [Node.js Server]
+        API[Express.js REST API]
+        Auth[JWT Auth Middleware]
+        Split[Order Splitter Service]
+    end
+
+    subgraph Data_Layer [MongoDB Atlas]
+        Users[(Users)]
+        Products[(Products)]
+        Orders[(Orders)]
+    end
+
+    Android & iOS & Web & Desktop --> Nav
+    Nav --> VM
+    VM --> Repo
+    Repo --> Net
+    Net -- HTTPS/JSON --> API
+    API --> Split
+    Split --> Orders
+
+```
+
+
+
+🚀 Tech Stack
+-------------
+
+### **Frontend (Monorepo - /client)**
+
+*   **Framework:** [Kotlin Multiplatform (KMP)](https://kotlinlang.org/lp/multiplatform/)
+
+*   **UI:** [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)
+
+*   **Architecture:** Clean Architecture + MVVM
+
+*   **Navigation:** JetBrains Navigation Compose
+
+*   **Dependency Injection:** Koin
+
+*   **Networking:** Ktor Client 3.0
+
+*   **Database (Local):** Room KMP
+
+*   **Image Loading:** Coil 3.0
+
+
+### **Backend (Monorepo - /backend)**
+
+*   **Runtime:** Node.js (v20+)
+
+*   **Framework:** Express.js
+
+*   **Database:** MongoDB Atlas (Mongoose ODM)
+
+*   **Security:** JWT (Access + Refresh Token Rotation), Bcrypt
+
+*   **Architecture:** MVC (Model-View-Controller)
+
+
+🛠️ Setup & Installation
+------------------------
+
+### Prerequisites
+
+*   Node.js (v18+)
+
+*   JDK 17 or 21
+
+*   Android Studio (Ladybug or newer)
+
+*   MongoDB Atlas Account
+
+
+### 1\. Backend Setup (The Brain)
+
+```
+# 1. Navigate to backend
+cd backend
+
+# 2. Install dependencies
+npm install
+
+# 3. Configure Environment
+# Create a .env file in /backend with:
+# MONGO_URI=your_mongodb_connection_string
+# JWT_SECRET=your_secret_key
+# PORT=8000
+
+# 4. Run Server
+npm run dev
+# Output: 🚀 Server running on http://localhost:8000
+
+```
+
+### 2\. Client Setup (The Face)
+
+1.  Open Ganga-Ecommerce/client in **Android Studio**.
+
+2.  Let Gradle Sync finish.
+
+3.  Select composeApp configuration.
+
+4.  Run on **Android Emulator** or **Desktop (JVM)**.
+
+
+✅ Progress Roadmap
+------------------
+
+### Phase 1: Foundation (Completed)
+
+*   \[x\] Monorepo Structure Setup
+
+*   \[x\] Node.js Backend Initialization
+
+*   \[x\] KMP Client Initialization (Android/iOS/Desktop/Web)
+
+*   \[x\] Dependency Injection Setup (Koin)
+
+
+### Phase 2: Core Backend & Security (Completed)
+
+*   \[x\] MongoDB Atlas Connection
+
+*   \[x\] User & Vendor Schemas
+
+*   \[x\] Auth API (Register/Login) with JWT
+
+*   \[x\] Refresh Token Rotation Strategy
+
+
+### Phase 3: Consumer App (In Progress)
+
+*   \[ \] Login/Register UI (Compose)
+
+*   \[ \] Home Screen & Product Feed
+
+*   \[ \] Product Search
+
+
+### Phase 4: Vendor Dashboard
+
+*   \[ \] Product Upload (Desktop)
+
+*   \[ \] Order Management
+
+
+### Phase 5: The "Complex" Stuff
+
+*   \[ \] Order Splitting Logic
+
+*   \[ \] Payment Gateway Sandbox
+
+*   \[ \] Push Notifications
+
+
+🤝 Contributing
+---------------
+
+This project is being built in public. If you find a bug or have a suggestion for the KMP architecture, feel free to open an Issue or Pull Request!
+
+📜 License
+----------
+
+This project is open-source under the MIT License.
+
+
+
+
