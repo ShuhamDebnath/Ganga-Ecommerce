@@ -1,24 +1,66 @@
---- Node.js ---
+========================
+
+OS & Global
+
+========================
+
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
+
+========================
+
+Backend (Node.js)
+
+========================
 
 node_modules/
 dist/
 coverage/
 .env
+.env.local
 npm-debug.log
 yarn-error.log
 
---- Android/Kotlin/Gradle ---
+========================
+
+Client (KMP/Android)
+
+========================
 
 .gradle/
+.kotlin/
 build/
+/build/
+!src//build/
+
+Local Configuration (Never commit these!)
+
 local.properties
-.idea/
-*.iml
-*.DS_Store
+gradle.properties.user
+
+Android generated files
+
 captures/
 .externalNativeBuild/
 .cxx/
+*.apk
+output.json
 
---- OS Specific ---
+========================
 
-Thumbs.db
+Client (iOS)
+
+========================
+
+.xcodeproj/
+!.xcodeproj/project.pbxproj
+!.xcodeproj/xcshareddata/
+!.xcodeproj/project.xcworkspace/
+!.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+xcuserdata/
+Pods/
+DerivedData/
