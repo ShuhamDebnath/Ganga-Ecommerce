@@ -18,7 +18,6 @@ class AuthRepositoryImpl(
 ) : AuthRepository {
 
     private fun getBaseUrl(): String {
-        // You can make this dynamic later.
         return Constants.BASE_URL_ANDROID
     }
 
@@ -28,7 +27,6 @@ class AuthRepositoryImpl(
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
-            // Parse response
             val authResponse: AuthResponse = response.body()
 
             if (authResponse.success) {
@@ -37,6 +35,7 @@ class AuthRepositoryImpl(
                 Result.failure(Exception(authResponse.message ?: "Unknown Error"))
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             Result.failure(e)
         }
     }
@@ -55,6 +54,7 @@ class AuthRepositoryImpl(
                 Result.failure(Exception(authResponse.message ?: "Unknown Error"))
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             Result.failure(e)
         }
     }

@@ -54,6 +54,11 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+// app.listen(PORT, () => {
+//     console.log(`🚀 Server running on http://localhost:${PORT}`);
+// });
+
+// Start Server - LISTEN ON 0.0.0.0 to fix Android Emulator Connection
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
 });

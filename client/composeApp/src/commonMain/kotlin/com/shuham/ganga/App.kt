@@ -1,49 +1,113 @@
 package com.shuham.ganga
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
-
-import ganga.composeapp.generated.resources.Res
-import ganga.composeapp.generated.resources.compose_multiplatform
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
+import com.shuham.ganga.presentation.auth.login.LoginScreenRoot
+import com.shuham.ganga.presentation.auth.onboarding.OnboardingScreenRoot
+import com.shuham.ganga.presentation.auth.signup.SignUpScreenRoot
+import com.shuham.ganga.presentation.auth.splash.SplashScreenRoot
+import com.shuham.ganga.presentation.navigation.AuthGraph
+import com.shuham.ganga.presentation.navigation.CartRoute
+import com.shuham.ganga.presentation.navigation.DashboardGraph
+import com.shuham.ganga.presentation.navigation.HomeRoute
+import com.shuham.ganga.presentation.navigation.LoginRoute
+import com.shuham.ganga.presentation.navigation.OnboardingRoute
+import com.shuham.ganga.presentation.navigation.PlaceholderScreen
+import com.shuham.ganga.presentation.navigation.ProfileRoute
+import com.shuham.ganga.presentation.navigation.SearchRoute
+import com.shuham.ganga.presentation.navigation.SignUpRoute
+import com.shuham.ganga.presentation.navigation.SplashRoute
+import com.shuham.ganga.presentation.theme.GangaTheme
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+//    MaterialTheme {
+    GangaTheme {
+        val navController = rememberNavController()
+
+        NavHost(
+            navController = navController,
+            startDestination = SplashRoute
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
+            // 1. Splash Route
+            composable<SplashRoute> {
+                SplashScreenRoot(
+                    onFinished = {
+                        navController.navigate(OnboardingRoute) {
+                            popUpTo(SplashRoute) { inclusive = true }
+                        }
+                    }
+                )
             }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+
+            // 2. Onboarding Route
+            composable<OnboardingRoute> {
+                OnboardingScreenRoot(
+                    onFinished = {
+                        navController.navigate(AuthGraph) {
+                            popUpTo(OnboardingRoute) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            // 3. Auth Nested Graph
+            navigation<AuthGraph>(startDestination = LoginRoute) {
+                composable<LoginRoute> {
+                    LoginScreenRoot(
+                        onLoginSuccess = {
+                            navController.navigate(DashboardGraph) {
+                                popUpTo(AuthGraph) { inclusive = true }
+                            }
+                        },
+                        onNavigateToSignUp = {
+                            navController.navigate(SignUpRoute) {
+                                popUpTo(AuthGraph) { inclusive = true }
+                            }
+                        }
+                    )
+                }
+
+                composable<SignUpRoute> {
+                    SignUpScreenRoot(
+                        onNavigateToLogin = {
+                            navController.navigate(LoginRoute) {
+                                popUpTo(AuthGraph) { inclusive = true }
+                            }
+                        },
+                        onSignUpSuccess = {
+                            navController.navigate(AuthGraph) {
+                                popUpTo(AuthGraph) { inclusive = true }
+                            }
+                        }
+
+
+                    )
+                }
+            }
+
+            // 4. Dashboard Nested Graph (Future Phase)
+            navigation<DashboardGraph>(startDestination = HomeRoute) {
+                composable<HomeRoute> {
+                    PlaceholderScreen("Home Screen")
+                }
+                composable<SearchRoute> {
+                    PlaceholderScreen("Search Screen")
+                }
+                composable<CartRoute> {
+                    PlaceholderScreen("Cart Screen")
+                }
+                composable<ProfileRoute> {
+                    PlaceholderScreen("Profile Screen")
                 }
             }
         }
     }
+
+//    }
 }

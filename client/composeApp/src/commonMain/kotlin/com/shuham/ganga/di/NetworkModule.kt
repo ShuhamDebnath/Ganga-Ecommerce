@@ -1,5 +1,6 @@
 package com.shuham.ganga.di
 
+import com.shuham.ganga.data.remote.getHttpClientEngine
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -11,8 +12,8 @@ import org.koin.dsl.module
 
 val networkModule = module {
     single {
-        HttpClient {
-            // 1. JSON Parsing
+        HttpClient(getHttpClientEngine()) {
+
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true

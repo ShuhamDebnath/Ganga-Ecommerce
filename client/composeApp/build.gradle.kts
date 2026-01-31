@@ -69,6 +69,7 @@ kotlin {
             // Koin (Dependency Injection)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
             // Ktor (Networking)
             implementation(libs.ktor.client.core)

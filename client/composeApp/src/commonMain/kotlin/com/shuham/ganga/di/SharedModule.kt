@@ -1,3 +1,3 @@
 package com.shuham.ganga.di
 
-val sharedModule = listOf(networkModule, appModule, platformModule)
+val sharedModules = listOf(networkModule, appModule, platformModule)
