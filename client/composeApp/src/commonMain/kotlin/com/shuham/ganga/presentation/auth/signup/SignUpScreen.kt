@@ -42,7 +42,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shuham.ganga.presentation.auth.login.LoginAction
 import com.shuham.ganga.presentation.components.GangaButton
 import com.shuham.ganga.presentation.components.GangaSocialButton
 import com.shuham.ganga.presentation.components.GangaTextField
@@ -52,7 +51,7 @@ import ganga.composeapp.generated.resources.Res
 import ganga.composeapp.generated.resources.ic_arrow_back
 import ganga.composeapp.generated.resources.ic_google
 import ganga.composeapp.generated.resources.ic_lock
-import ganga.composeapp.generated.resources.ic_logo_bag
+import ganga.composeapp.generated.resources.ic_bag
 import ganga.composeapp.generated.resources.ic_mail
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -127,7 +126,7 @@ fun SignUpScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_logo_bag),
+                    painter = painterResource(Res.drawable.ic_bag),
                     contentDescription = null,
                     tint = GangaOrange,
                     modifier = Modifier.size(40.dp)
@@ -216,7 +215,7 @@ fun SignUpScreen(
                     value = state.storeName,
                     onValueChange = { onAction(SignUpAction.OnStoreNameChange(it)) },
                     placeholder = "Your Business Name",
-                    leadingIcon = Res.drawable.ic_logo_bag
+                    leadingIcon = Res.drawable.ic_bag
                 )
             }
 

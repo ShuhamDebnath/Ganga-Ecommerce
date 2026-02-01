@@ -44,6 +44,26 @@ export const getProducts = async (req, res) => {
   }
 };
 
+// @desc    Get Single Product
+// @route   GET /api/v1/products/:id
+export const getProductById = async (req, res) => {
+  try {
+    // Populate vendor info to show "Sold by TechStore"
+    const product = await Product.findById(req.params.id); 
+
+    if (product) {
+      res.json({
+        success: true,
+        data: product
+      });
+    } else {
+      res.status(404).json({ message: 'Product not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Create a Product (Vendor Only)
 // @route   POST /api/v1/products
 export const createProduct = async (req, res) => {

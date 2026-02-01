@@ -1,4 +1,4 @@
-package com.shuham.ganga.presentation.dashboard.home
+package com.shuham.ganga.presentation.dashboard.tabs.home
 
 import com.shuham.ganga.data.remote.model.ProductDto
 

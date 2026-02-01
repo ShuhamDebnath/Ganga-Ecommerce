@@ -35,6 +35,9 @@ object CartRoute
 @Serializable
 object ProfileRoute
 
+@Serializable
+data class ProductDetailRoute(val id: String)
+
 // --- Helper for Development ---
 @Composable
 fun PlaceholderScreen(name: String) {

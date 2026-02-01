@@ -12,6 +12,13 @@ data class ProductResponse(
 )
 
 @Serializable
+data class SingleProductResponse(
+    val success: Boolean,
+    val data: ProductDto?
+)
+
+
+@Serializable
 data class ProductDto(
     @SerialName("_id") val id: String,
     val title: String,

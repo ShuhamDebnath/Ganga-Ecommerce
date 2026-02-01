@@ -1,4 +1,4 @@
-package com.shuham.ganga.presentation.dashboard.home
+package com.shuham.ganga.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,46 +9,38 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+class ProductDetailViewModel(
     private val repository: ProductRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(HomeState())
+    private val _state = MutableStateFlow(ProductDetailState())
     val state = _state.asStateFlow()
 
-    init {
-        loadProducts()
-    }
-
-    fun onAction(action: HomeAction) {
+    fun onAction(action: ProductDetailAction) {
         when (action) {
-            HomeAction.OnRefresh -> loadProducts()
+            is ProductDetailAction.LoadProduct -> loadProduct(action.id)
+            is ProductDetailAction.OnImageChange -> {
+                _state.update { it.copy(selectedImageIndex = action.index) }
+            }
+            ProductDetailAction.OnAddToCart -> {
+                // TODO: Implement Cart Add Logic
+            }
             else -> Unit
         }
     }
 
-    private fun loadProducts() {
+    private fun loadProduct(id: String) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = repository.getProducts()
+            val result = repository.getProductById(id)
 
             when (result) {
                 is NetworkResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            products = result.data ?: emptyList()
-                        )
-                    }
+                    _state.update { it.copy(isLoading = false, product = result.data) }
                 }
                 is NetworkResult.Error -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = result.message
-                        )
-                    }
+                    _state.update { it.copy(isLoading = false, errorMessage = result.message) }
                 }
                 is NetworkResult.Loading -> {
                     _state.update { it.copy(isLoading = true) }

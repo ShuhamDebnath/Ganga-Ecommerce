@@ -2,7 +2,6 @@ package com.shuham.ganga.presentation.auth.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,9 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -28,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,20 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shuham.ganga.presentation.auth.login.LoginAction
 import com.shuham.ganga.presentation.components.GangaButton
 import com.shuham.ganga.presentation.theme.GangaOrange
 import ganga.composeapp.generated.resources.Res
-import ganga.composeapp.generated.resources.ic_arrow_back
-import ganga.composeapp.generated.resources.ic_arrow_forward
 import ganga.composeapp.generated.resources.ic_delivery_truck
-import ganga.composeapp.generated.resources.ic_logo_bag
+import ganga.composeapp.generated.resources.ic_bag
 import ganga.composeapp.generated.resources.ic_security_check
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.math.round
 
 // --- ROOT COMPOSABLE (Logic) ---
 @Composable
@@ -86,21 +75,21 @@ fun OnboardingScreen(
             title = "Fast Delivery",
             description = "Get your order delivered to your doorstep quickly with our super fast delivery partners.",
             //image = Res.drawable.img_onboarding_delivery,
-            image = Res.drawable.ic_logo_bag,
+            image = Res.drawable.ic_bag,
             icon = Res.drawable.ic_delivery_truck
         ),
         OnboardingPage(
             title = "Wide Variety",
             description = "Explore thousands of products from multiple trusted vendors in one single place.",
             //image = Res.drawable.img_onboarding_variety,
-            image = Res.drawable.ic_logo_bag,
-            icon = Res.drawable.ic_logo_bag
+            image = Res.drawable.ic_bag,
+            icon = Res.drawable.ic_bag
         ),
         OnboardingPage(
             title = "Secure Payment",
             description = "Enjoy a safe and seamless checkout experience with our multi-layer security.",
             //image = Res.drawable.img_onboarding_secure,
-            image = Res.drawable.ic_logo_bag,
+            image = Res.drawable.ic_bag,
             icon = Res.drawable.ic_security_check
         )
     )

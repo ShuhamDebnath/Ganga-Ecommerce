@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shuham.ganga.presentation.theme.GangaOrange
 import ganga.composeapp.generated.resources.Res
-import ganga.composeapp.generated.resources.ic_logo_bag
+import ganga.composeapp.generated.resources.ic_bag
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -93,7 +93,7 @@ fun SplashScreen() {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(Res.drawable.ic_logo_bag),
+                    painter = painterResource(Res.drawable.ic_bag),
                     contentDescription = "Ganga Logo",
                     modifier = Modifier.fillMaxSize()
                 )

@@ -10,7 +10,9 @@ import com.shuham.ganga.presentation.auth.login.LoginViewModel
 import com.shuham.ganga.presentation.auth.onboarding.OnboardingViewModel
 import com.shuham.ganga.presentation.auth.signup.SignUpViewModel
 import com.shuham.ganga.presentation.auth.splash.SplashViewModel
-import com.shuham.ganga.presentation.dashboard.home.HomeViewModel
+import com.shuham.ganga.presentation.dashboard.tabs.home.HomeViewModel
+import com.shuham.ganga.presentation.dashboard.tabs.search.SearchViewModel
+import com.shuham.ganga.presentation.detail.ProductDetailViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
@@ -31,5 +33,7 @@ val appModule = module {
     viewModelOf(::OnboardingViewModel)
     viewModelOf(::SplashViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::SearchViewModel)
+    viewModelOf(::ProductDetailViewModel)
 }
 

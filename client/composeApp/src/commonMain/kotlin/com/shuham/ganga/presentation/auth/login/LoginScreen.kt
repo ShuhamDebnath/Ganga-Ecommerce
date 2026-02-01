@@ -40,7 +40,7 @@ import com.shuham.ganga.presentation.theme.GangaOrangeLight
 import ganga.composeapp.generated.resources.Res
 import ganga.composeapp.generated.resources.ic_google
 import ganga.composeapp.generated.resources.ic_lock
-import ganga.composeapp.generated.resources.ic_logo_bag
+import ganga.composeapp.generated.resources.ic_bag
 import ganga.composeapp.generated.resources.ic_mail
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -98,7 +98,7 @@ fun LoginScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_logo_bag),
+                    painter = painterResource(Res.drawable.ic_bag),
                     contentDescription = null,
                     tint = GangaOrange,
                     modifier = Modifier.size(40.dp)

@@ -1,4 +1,4 @@
-package com.shuham.ganga.presentation.dashboard.home
+package com.shuham.ganga.presentation.dashboard.tabs.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,7 +26,7 @@ import com.shuham.ganga.presentation.theme.GangaOrange
 import ganga.composeapp.generated.resources.Res
 import ganga.composeapp.generated.resources.ic_favorite_fill
 import ganga.composeapp.generated.resources.ic_location_on
-import ganga.composeapp.generated.resources.ic_logo_bag
+import ganga.composeapp.generated.resources.ic_bag
 import ganga.composeapp.generated.resources.ic_notifications
 import ganga.composeapp.generated.resources.ic_search
 import ganga.composeapp.generated.resources.ic_timer
@@ -155,7 +155,7 @@ fun HomeTopBar() {
         Row(verticalAlignment = Alignment.CenterVertically) {
             // App Logo
             Icon(
-                painter = painterResource(Res.drawable.ic_logo_bag),
+                painter = painterResource(Res.drawable.ic_bag),
                 contentDescription = null,
                 tint = GangaOrange,
                 modifier = Modifier.size(28.dp)
