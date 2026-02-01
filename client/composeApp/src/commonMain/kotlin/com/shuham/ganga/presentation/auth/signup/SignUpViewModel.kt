@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shuham.ganga.data.remote.model.RegisterRequest
 import com.shuham.ganga.domain.repository.AuthRepository
+import com.shuham.ganga.utils.NetworkResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -60,19 +61,27 @@ class SignUpViewModel(
             )
             val result = repository.register(registerRequest)
 
-            result.fold(
-                onSuccess = { response ->
+            when (result) {
+                is NetworkResult.Success -> {
                     _state.update {
                         it.copy(
                             isLoading = false,
                             successMessage = "Account created successfully!"
                         )
                     }
-                },
-                onFailure = { error ->
-                    _state.update { it.copy(isLoading = false, errorMessage = error.message) }
                 }
-            )
+                is NetworkResult.Error -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                    }
+                }
+                is NetworkResult.Loading -> {
+                    _state.update { it.copy(isLoading = true) }
+                }
+            }
         }
     }
 }

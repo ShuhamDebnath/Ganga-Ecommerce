@@ -1,7 +1,6 @@
 package com.shuham.ganga.presentation.auth.splash
 
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -21,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,20 +34,34 @@ import androidx.compose.ui.unit.sp
 import com.shuham.ganga.presentation.theme.GangaOrange
 import ganga.composeapp.generated.resources.Res
 import ganga.composeapp.generated.resources.ic_logo_bag
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SplashScreenRoot(
-    onFinished: () -> Unit
+    navigateToDashboard: () -> Unit,
+    navigateToOnboarding: () -> Unit,
+    navigateToAuth: () -> Unit
 ) {
-    SplashScreen(onFinished = onFinished)
+    println("SplashScreenRoot called ============================================")
+    val splashViewModel = koinViewModel<SplashViewModel>()
+
+    val navigationEvent by splashViewModel.navigationEvent.collectAsState()
+
+    LaunchedEffect(navigationEvent) {
+        when (navigationEvent) {
+            SplashNavigation.ToDashboard -> navigateToDashboard()
+            SplashNavigation.ToOnboarding -> navigateToOnboarding()
+            SplashNavigation.ToAuth -> navigateToAuth()
+            null -> {} // Waiting
+        }
+    }
+
+    SplashScreen()
 }
+
 @Composable
-fun SplashScreen(
-    onFinished: () -> Unit
-) {
-    // Pulsing animation for the logo
+fun SplashScreen() {
     val infiniteTransition = rememberInfiniteTransition()
     val scale by infiniteTransition.animateFloat(
         initialValue = 0.95f,
@@ -72,14 +86,12 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Main Logo
             Box(
                 modifier = Modifier
                     .size(120.dp)
                     .graphicsLayer(scaleX = scale, scaleY = scale),
                 contentAlignment = Alignment.Center
             ) {
-                // Ensure ic_ganga_logo.xml uses hex colors, not @android:color/white
                 Image(
                     painter = painterResource(Res.drawable.ic_logo_bag),
                     contentDescription = "Ganga Logo",
@@ -105,7 +117,6 @@ fun SplashScreen(
             )
         }
 
-        // Bottom Loading
         CircularProgressIndicator(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -115,16 +126,10 @@ fun SplashScreen(
             strokeWidth = 4.dp
         )
     }
-
-    // Navigation Delay
-    LaunchedEffect(Unit) {
-        delay(2500)
-        onFinished()
-    }
 }
 
 @Preview
 @Composable
-fun SplashScreenPrev(){
-    SplashScreen(){}
+fun SplashScreenPrev() {
+    SplashScreen()
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shuham.ganga.data.remote.model.LoginRequest
 import com.shuham.ganga.domain.repository.AuthRepository
+import com.shuham.ganga.utils.NetworkResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -46,7 +47,6 @@ class LoginViewModel(
     }
 
     private fun login() {
-        println("Login clicked")
         val currentEmail = _state.value.email
         val currentPassword = _state.value.password
 
@@ -59,21 +59,25 @@ class LoginViewModel(
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
             val result = repository.login(LoginRequest(currentEmail, currentPassword))
-            println("Login result: $result")
-
-            result.onSuccess { response ->
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        successMessage = "Welcome back, ${response.data?.name}!"
-                    )
+            when (result) {
+                is NetworkResult.Success -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            successMessage = "Welcome back, ${result.data?.data?.name}!"
+                        )
+                    }
                 }
-            }.onFailure { error ->
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = error.message ?: "Login failed. Please try again."
-                    )
+                is NetworkResult.Error -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.message ?: "Login failed. Please try again."
+                        )
+                    }
+                }
+                is NetworkResult.Loading -> {
+                    _state.update { it.copy(isLoading = true) }
                 }
             }
         }

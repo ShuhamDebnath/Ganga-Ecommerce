@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
 // Initialize Environment Variables
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(express.json()); // Parse JSON bodies
 
 // Routes
 app.use('/api/v1/auth', authRoutes); 
+app.use('/api/v1/products', productRoutes);
 
 // Database Connection (Placeholder for Phase 2)
 const connectDB = async () => {
@@ -54,11 +56,11 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-// app.listen(PORT, () => {
-//     console.log(`🚀 Server running on http://localhost:${PORT}`);
-// });
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
 
 // Start Server - LISTEN ON 0.0.0.0 to fix Android Emulator Connection
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
-});
+// app.listen(PORT, '0.0.0.0', () => {
+//     console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+// });

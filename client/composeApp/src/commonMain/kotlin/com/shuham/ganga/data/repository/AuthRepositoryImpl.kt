@@ -1,11 +1,14 @@
 package com.shuham.ganga.data.repository
 
 
+import com.shuham.ganga.data.local.TokenManager
 import com.shuham.ganga.data.remote.model.AuthResponse
 import com.shuham.ganga.data.remote.model.LoginRequest
 import com.shuham.ganga.data.remote.model.RegisterRequest
 import com.shuham.ganga.domain.repository.AuthRepository
 import com.shuham.ganga.utils.Constants
+import com.shuham.ganga.utils.NetworkResult
+import com.shuham.ganga.utils.PlatformConstants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -14,14 +17,13 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 class AuthRepositoryImpl(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val tokenManager: TokenManager
 ) : AuthRepository {
 
-    private fun getBaseUrl(): String {
-        return Constants.BASE_URL_ANDROID
-    }
+    private fun getBaseUrl(): String = PlatformConstants.BASE_URL
 
-    override suspend fun login(request: LoginRequest): Result<AuthResponse> {
+    override suspend fun login(request: LoginRequest): NetworkResult<AuthResponse> {
         return try {
             val response = client.post("${getBaseUrl()}auth/login") {
                 contentType(ContentType.Application.Json)
@@ -30,17 +32,24 @@ class AuthRepositoryImpl(
             val authResponse: AuthResponse = response.body()
 
             if (authResponse.success) {
-                Result.success(authResponse)
+                // Save tokens locally
+                tokenManager.saveAuthData(
+                    accessToken = authResponse.data?.accessToken ?: "",
+                    refreshToken = authResponse.data?.refreshToken ?: "",
+                    userName = authResponse.data?.name ?: "User"
+                )
+                NetworkResult.Success(authResponse)
             } else {
-                Result.failure(Exception(authResponse.message ?: "Unknown Error"))
+                NetworkResult.Error(authResponse.message ?: "Unknown Error")
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Result.failure(e)
+            NetworkResult.Error(e.message ?: "Network Error")
         }
     }
 
-    override suspend fun register(request: RegisterRequest): Result<AuthResponse> {
+    override suspend fun register(request: RegisterRequest): NetworkResult<AuthResponse> {
+        // Similar logic for register... (omitted for brevity, use same pattern)
         return try {
             val response = client.post("${getBaseUrl()}auth/register") {
                 contentType(ContentType.Application.Json)
@@ -49,13 +58,18 @@ class AuthRepositoryImpl(
             val authResponse: AuthResponse = response.body()
 
             if (authResponse.success) {
-                Result.success(authResponse)
+                tokenManager.saveAuthData(
+                    accessToken = authResponse.data?.accessToken ?: "",
+                    refreshToken = authResponse.data?.refreshToken ?: "",
+                    userName = authResponse.data?.name ?: "User"
+                )
+                NetworkResult.Success(authResponse)
             } else {
-                Result.failure(Exception(authResponse.message ?: "Unknown Error"))
+                NetworkResult.Error(authResponse.message ?: "Unknown Error")
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Result.failure(e)
+            NetworkResult.Error(e.message ?: "Network Error")
         }
     }
 }

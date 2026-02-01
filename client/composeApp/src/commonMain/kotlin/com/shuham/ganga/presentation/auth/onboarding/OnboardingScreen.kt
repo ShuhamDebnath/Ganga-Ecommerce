@@ -65,8 +65,10 @@ fun OnboardingScreenRoot(
         state = state,
         onAction = { action ->
             when (action) {
-                OnboardingAction.OnSkipClick -> onFinished()
-                OnboardingAction.OnGetStartedClick -> onFinished()
+                OnboardingAction.OnGetStartedClick -> {
+                    viewModel.onAction(action)
+                    onFinished()
+                }
                 else -> viewModel.onAction(action)
             }
         }

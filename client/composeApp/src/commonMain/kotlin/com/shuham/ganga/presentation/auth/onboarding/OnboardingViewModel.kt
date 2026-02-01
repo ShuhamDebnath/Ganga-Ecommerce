@@ -1,16 +1,18 @@
 package com.shuham.ganga.presentation.auth.onboarding
 
 import androidx.lifecycle.ViewModel
+import com.shuham.ganga.data.local.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class OnboardingViewModel : ViewModel() {
+class OnboardingViewModel(
+    private val tokenManager: TokenManager
+) : ViewModel() {
 
     private val _state = MutableStateFlow(OnboardingState())
     val state = _state.asStateFlow()
 
-    // We hardcode the page count here to match the UI content
     private val totalPages = 3
 
     fun onAction(action: OnboardingAction) {
@@ -34,12 +36,12 @@ class OnboardingViewModel : ViewModel() {
                     }
                 }
             }
-            OnboardingAction.OnSkipClick -> {
-                // Future: Save "onboarding_completed" preference here
-            }
-            OnboardingAction.OnGetStartedClick -> {
-                // Future: Save "onboarding_completed" preference here
-            }
+            // FIX: Handle BOTH Skip and Get Started
+            OnboardingAction.OnGetStartedClick -> completeOnboarding()
         }
+    }
+
+    private fun completeOnboarding() {
+        tokenManager.setFirstRunCompleted()
     }
 }

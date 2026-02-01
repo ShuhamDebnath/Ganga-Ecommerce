@@ -175,7 +175,7 @@ npm run dev
 
 ### Phase 3: Consumer App (In Progress)
 
-*   \[ \] Login/Register UI (Compose)
+*   \[x\] Login/Register UI (Compose)
 
 *   \[ \] Home Screen & Product Feed
 

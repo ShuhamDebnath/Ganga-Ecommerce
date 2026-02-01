@@ -10,6 +10,7 @@ import com.shuham.ganga.presentation.auth.login.LoginScreenRoot
 import com.shuham.ganga.presentation.auth.onboarding.OnboardingScreenRoot
 import com.shuham.ganga.presentation.auth.signup.SignUpScreenRoot
 import com.shuham.ganga.presentation.auth.splash.SplashScreenRoot
+import com.shuham.ganga.presentation.dashboard.DashboardScreenRoot
 import com.shuham.ganga.presentation.navigation.AuthGraph
 import com.shuham.ganga.presentation.navigation.CartRoute
 import com.shuham.ganga.presentation.navigation.DashboardGraph
@@ -37,8 +38,18 @@ fun App() {
             // 1. Splash Route
             composable<SplashRoute> {
                 SplashScreenRoot(
-                    onFinished = {
+                    navigateToDashboard = {
+                        navController.navigate(DashboardGraph) {
+                            popUpTo(SplashRoute) { inclusive = true }
+                        }
+                    },
+                    navigateToOnboarding = {
                         navController.navigate(OnboardingRoute) {
+                            popUpTo(SplashRoute) { inclusive = true }
+                        }
+                    },
+                    navigateToAuth = {
+                        navController.navigate(AuthGraph) {
                             popUpTo(SplashRoute) { inclusive = true }
                         }
                     }
@@ -94,7 +105,9 @@ fun App() {
             // 4. Dashboard Nested Graph (Future Phase)
             navigation<DashboardGraph>(startDestination = HomeRoute) {
                 composable<HomeRoute> {
-                    PlaceholderScreen("Home Screen")
+                    DashboardScreenRoot(
+                        onNavigateToProduct = { /* Navigate to Details */ }
+                    )
                 }
                 composable<SearchRoute> {
                     PlaceholderScreen("Search Screen")
