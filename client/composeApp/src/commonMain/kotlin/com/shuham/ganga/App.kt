@@ -101,7 +101,13 @@ fun App() {
 
 
             composable<DashboardGraph> {
-                DashboardScreenRoot()
+                DashboardScreenRoot(
+                    onLogout = {
+                        navController.navigate(AuthGraph){
+                            popUpTo(DashboardGraph) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }

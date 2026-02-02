@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shuham.ganga.data.remote.model.LoginRequest
 import com.shuham.ganga.domain.repository.AuthRepository
+import com.shuham.ganga.domain.usecase.LoginUseCase
 import com.shuham.ganga.utils.NetworkResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val repository: AuthRepository
+    private val loginUseCase: LoginUseCase // Injected UseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -58,7 +59,9 @@ class LoginViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = repository.login(LoginRequest(currentEmail, currentPassword))
+            // Call UseCase
+            val result = loginUseCase(LoginRequest(currentEmail, currentPassword))
+
             when (result) {
                 is NetworkResult.Success -> {
                     _state.update {
@@ -72,7 +75,7 @@ class LoginViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = result.message ?: "Login failed. Please try again."
+                            errorMessage = result.message ?: "Login failed."
                         )
                     }
                 }

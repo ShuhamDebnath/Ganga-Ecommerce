@@ -104,3 +104,38 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Refresh Access Token
+// @route   POST /api/v1/auth/refresh
+export const refreshAccessToken = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(401).json({ success: false, message: 'No refresh token provided' });
+  }
+
+  try {
+    // 1. Verify Refresh Token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+    // 2. Check if user exists and token matches DB
+    const user = await User.findById(decoded.id).select('+refresh_token');
+    
+    if (!user || user.refresh_token !== refreshToken) {
+      return res.status(403).json({ success: false, message: 'Invalid refresh token' });
+    }
+
+    // 3. Generate NEW Access Token
+    const accessToken = generateAccessToken(user._id);
+    
+    // Optional: Rotate Refresh Token here too for extra security
+    
+    res.json({
+      success: true,
+      accessToken
+    });
+
+  } catch (error) {
+    return res.status(403).json({ success: false, message: 'Invalid refresh token' });
+  }
+};

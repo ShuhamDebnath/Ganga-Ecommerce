@@ -22,6 +22,7 @@ import com.shuham.ganga.presentation.checkout.CheckoutScreenRoot
 import com.shuham.ganga.presentation.dashboard.components.DashboardBottomBar
 import com.shuham.ganga.presentation.dashboard.tabs.cart.CartScreenRoot
 import com.shuham.ganga.presentation.dashboard.tabs.home.HomeScreenRoot
+import com.shuham.ganga.presentation.dashboard.tabs.profile.ProfileScreenRoot
 import com.shuham.ganga.presentation.dashboard.tabs.search.SearchScreenRoot
 import com.shuham.ganga.presentation.detail.ProductDetailScreenRoot
 import com.shuham.ganga.presentation.navigation.CartRoute
@@ -34,6 +35,7 @@ import com.shuham.ganga.presentation.navigation.SearchRoute
 
 @Composable
 fun DashboardScreenRoot(
+    onLogout: () -> Unit
 ) {
 
     // 1. Internal NavController for the entire Consumer App Flow
@@ -141,7 +143,7 @@ fun DashboardScreenRoot(
 
             // --- TAB 4: PROFILE ---
             composable<ProfileRoute> {
-                PlaceholderScreen("Profile")
+                ProfileScreenRoot(onNavigateToAuth = onLogout)
             }
 
             // --- DETAILS (Full Screen / No Bottom Bar) ---
@@ -176,12 +178,5 @@ fun DashboardScreenRoot(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun PlaceholderScreen(name: String) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Coming Soon: $name", color = androidx.compose.ui.graphics.Color.Gray)
     }
 }

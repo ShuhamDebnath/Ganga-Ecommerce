@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.shuham.ganga.data.remote.model.OrderItemDto
 import com.shuham.ganga.data.remote.model.OrderRequest
 import com.shuham.ganga.data.remote.model.ShippingAddressDto
-import com.shuham.ganga.domain.repository.CartRepository
-import com.shuham.ganga.domain.repository.OrderRepository
+import com.shuham.ganga.domain.usecase.ClearCartUseCase
+import com.shuham.ganga.domain.usecase.GetCartItemsUseCase
+import com.shuham.ganga.domain.usecase.PlaceOrderUseCase
 import com.shuham.ganga.utils.NetworkResult
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -17,8 +17,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CheckoutViewModel(
-    private val cartRepository: CartRepository,
-    private val orderRepository: OrderRepository
+    private val getCartItemsUseCase: GetCartItemsUseCase,
+    private val placeOrderUseCase: PlaceOrderUseCase,
+    private val clearCartUseCase: ClearCartUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CheckoutState())
@@ -31,11 +32,11 @@ class CheckoutViewModel(
     private fun loadOrderSummary() {
         _state.update { it.copy(isLoading = true) }
 
-        cartRepository.getCartItems()
+        getCartItemsUseCase()
             .onEach { items ->
                 val subtotal = items.sumOf { it.price * it.quantity }
-                val tax = subtotal * 0.05 // 5% GST
-                val shipping = if (subtotal > 1000) 0.0 else 50.0 // Free shipping over 1000
+                val tax = subtotal * 0.05
+                val shipping = if (subtotal > 1000) 0.0 else 50.0
                 val total = subtotal + tax + shipping
 
                 _state.update {
@@ -69,11 +70,11 @@ class CheckoutViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
-            // 1. Map Local Cart Entity -> Network DTO
+            // 1. Map Data
             val orderItems = currentState.items.map { item ->
                 OrderItemDto(
                     productId = item.productId,
-                    vendorId = item.vendorId, // Required for backend order splitting
+                    vendorId = item.vendorId,
                     title = item.title,
                     image = item.imageUrl,
                     price = item.price,
@@ -81,8 +82,6 @@ class CheckoutViewModel(
                 )
             }
 
-            // 2. Create Shipping Address
-            // Note: In a real app, this comes from the user's selected address profile
             val shippingAddress = ShippingAddressDto(
                 fullName = "John Doe",
                 address = "123 Market Road, Indiranagar",
@@ -92,7 +91,6 @@ class CheckoutViewModel(
                 phone = "+91 9876543210"
             )
 
-            // 3. Build Request
             val request = OrderRequest(
                 orderItems = orderItems,
                 shippingAddress = shippingAddress,
@@ -100,13 +98,13 @@ class CheckoutViewModel(
                 totalPrice = currentState.totalAmount
             )
 
-            // 4. Send to Backend
-            val result = orderRepository.createOrder(request)
+            // 2. Call UseCase
+            val result = placeOrderUseCase(request)
 
             when (result) {
                 is NetworkResult.Success -> {
-                    // Success: Clear the cart locally since order is saved on server
-                    cartRepository.clearCart()
+                    // 3. Clear Cart via UseCase
+                    clearCartUseCase()
                     _state.update { it.copy(isLoading = false, isOrderPlaced = true) }
                 }
                 is NetworkResult.Error -> {

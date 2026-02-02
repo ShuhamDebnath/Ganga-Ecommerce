@@ -16,7 +16,7 @@
 A sneak peek into the **Compose Multiplatform** UI running natively. The interface follows a modern "Luxe" design language with a focus on whitespace and vibrant accents.
 <img src="docs/screenshots/ui_collage.png" />
 
-> _Screens: Login, Home Dashboard, Product Details, Cart, and Checkout._
+> _Screens: Login, Home Dashboard, Product Details, Cart, Checkout, etc ._
 
 
 

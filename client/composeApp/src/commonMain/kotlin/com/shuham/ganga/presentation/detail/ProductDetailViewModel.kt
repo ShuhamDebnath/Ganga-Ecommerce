@@ -1,10 +1,12 @@
 package com.shuham.ganga.presentation.detail
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shuham.ganga.data.local.entity.CartEntity
-import com.shuham.ganga.domain.repository.CartRepository
-import com.shuham.ganga.domain.repository.ProductRepository
+import com.shuham.ganga.domain.model.Product
+import com.shuham.ganga.domain.usecase.AddToCartUseCase
+import com.shuham.ganga.domain.usecase.GetProductByIdUseCase
 import com.shuham.ganga.utils.NetworkResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,8 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
-    private val repository: ProductRepository,
-    private val cartRepository: CartRepository
+    private val getProductByIdUseCase: GetProductByIdUseCase, // <-- UseCase
+    private val addToCartUseCase: AddToCartUseCase            // <-- UseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProductDetailState())
@@ -25,22 +27,18 @@ class ProductDetailViewModel(
             is ProductDetailAction.OnImageChange -> {
                 _state.update { it.copy(selectedImageIndex = action.index) }
             }
-
             ProductDetailAction.OnAddToCart -> addToCart(navigateAfter = false)
             ProductDetailAction.OnCheckout -> addToCart(navigateAfter = true)
             ProductDetailAction.OnMessageShown -> {
                 _state.update { it.copy(addToCartMessage = null) }
             }
-
             ProductDetailAction.OnNavigationHandled -> {
                 _state.update { it.copy(navigateToCart = false) }
             }
-
             ProductDetailAction.OnViewCartClick -> {
                 _state.update { it.copy(navigateToCart = true) }
             }
-
-            else -> {}
+            else -> Unit
         }
     }
 
@@ -48,18 +46,16 @@ class ProductDetailViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = repository.getProductById(id)
+            val result = getProductByIdUseCase(id)
 
             when (result) {
-                is NetworkResult.Success -> {
+                is NetworkResult.Success<Product> -> {
                     _state.update { it.copy(isLoading = false, product = result.data) }
                 }
-
-                is NetworkResult.Error -> {
+                is NetworkResult.Error<Product> -> {
                     _state.update { it.copy(isLoading = false, errorMessage = result.message) }
                 }
-
-                is NetworkResult.Loading -> {
+                is NetworkResult.Loading<*> -> {
                     _state.update { it.copy(isLoading = true) }
                 }
             }
@@ -70,17 +66,19 @@ class ProductDetailViewModel(
         val product = _state.value.product ?: return
 
         viewModelScope.launch {
+            val displayImage = product.images.firstOrNull() ?: ""
+
             val cartItem = CartEntity(
                 productId = product.id,
                 vendorId = product.vendorId ?: "Unknown Vendor",
                 title = product.title,
                 price = product.price,
-                imageUrl = product.images.firstOrNull() ?: "",
+                imageUrl = displayImage,
                 quantity = 1,
                 category = product.category
             )
 
-            cartRepository.addToCart(cartItem)
+            addToCartUseCase(cartItem)
 
             _state.update {
                 it.copy(

@@ -21,12 +21,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.shuham.ganga.data.remote.model.ProductDto
+import com.shuham.ganga.domain.model.Product
 import com.shuham.ganga.presentation.theme.GangaOrange
 
 @Composable
 fun ProductCard(
-    product: ProductDto,
+    product: Product,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {

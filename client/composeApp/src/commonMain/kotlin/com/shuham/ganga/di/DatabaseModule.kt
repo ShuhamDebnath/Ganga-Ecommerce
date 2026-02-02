@@ -7,4 +7,5 @@ import org.koin.dsl.module
 val databaseModule = module {
     // Provide the MovieDao by getting the AppDatabase instance
     single { get<AppDatabase>().cartDao() }
+    single { get<AppDatabase>().productDao() }
 }
