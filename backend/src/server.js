@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 // Initialize Environment Variables
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json()); // Parse JSON bodies
 // Routes
 app.use('/api/v1/auth', authRoutes); 
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/orders', orderRoutes);
 
 // Database Connection (Placeholder for Phase 2)
 const connectDB = async () => {

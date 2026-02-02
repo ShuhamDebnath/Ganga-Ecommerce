@@ -34,16 +34,43 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ProductDetailScreenRoot(
     productId: String,
     onNavigateBack: () -> Unit,
+    onNavigateToCart: () -> Unit,
     viewModel: ProductDetailViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    // Load Product
     LaunchedEffect(productId) {
         viewModel.onAction(ProductDetailAction.LoadProduct(productId))
     }
 
+    // Handle Snackbar
+    LaunchedEffect(state.addToCartMessage) {
+        state.addToCartMessage?.let { message ->
+            val result = snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = "View Cart",
+                duration = SnackbarDuration.Short
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                viewModel.onAction(ProductDetailAction.OnViewCartClick)
+            }
+            viewModel.onAction(ProductDetailAction.OnMessageShown)
+        }
+    }
+
+    // Handle Navigation to Cart
+    LaunchedEffect(state.navigateToCart) {
+        if (state.navigateToCart) {
+            onNavigateToCart()
+            viewModel.onAction(ProductDetailAction.OnNavigationHandled)
+        }
+    }
+
     ProductDetailScreen(
         state = state,
+        snackbarHostState = snackbarHostState,
         onAction = { action ->
             when (action) {
                 ProductDetailAction.OnBackClick -> onNavigateBack()
@@ -56,10 +83,12 @@ fun ProductDetailScreenRoot(
 @Composable
 fun ProductDetailScreen(
     state: ProductDetailState,
+    snackbarHostState: SnackbarHostState,
     onAction: (ProductDetailAction) -> Unit
 ) {
     Scaffold(
         containerColor = Color.White,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             if (!state.isLoading && state.product != null) {
                 ProductBottomBar(onAction)

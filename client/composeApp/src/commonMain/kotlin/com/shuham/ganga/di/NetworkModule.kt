@@ -12,7 +12,8 @@ import org.koin.dsl.module
 
 val networkModule = module {
     single {
-        HttpClient(getHttpClientEngine()) {
+        //HttpClient(getHttpClientEngine()) {
+        HttpClient(get()) {
 
             install(ContentNegotiation) {
                 json(Json {

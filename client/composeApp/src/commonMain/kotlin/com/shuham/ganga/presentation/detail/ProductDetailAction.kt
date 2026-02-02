@@ -8,4 +8,8 @@ sealed interface ProductDetailAction {
     data object OnAddToCart : ProductDetailAction
     data object OnCheckout : ProductDetailAction
     data class OnImageChange(val index: Int) : ProductDetailAction
+
+    data object OnMessageShown : ProductDetailAction
+    data object OnNavigationHandled : ProductDetailAction
+    data object OnViewCartClick : ProductDetailAction
 }

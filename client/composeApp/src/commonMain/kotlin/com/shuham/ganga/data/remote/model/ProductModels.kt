@@ -21,6 +21,7 @@ data class SingleProductResponse(
 @Serializable
 data class ProductDto(
     @SerialName("_id") val id: String,
+    @SerialName("vendor_id") val vendorId: String? = null,
     val title: String,
     val description: String,
     val price: Double,

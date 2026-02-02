@@ -9,6 +9,17 @@
 
 > **A production-grade, full-stack e-commerce engine built to demonstrate System Design, Scalability, and Cross-Platform Code Sharing.**
 
+
+📱 UI Showcase
+--------------
+
+A sneak peek into the **Compose Multiplatform** UI running natively. The interface follows a modern "Luxe" design language with a focus on whitespace and vibrant accents.
+<img src="docs/screenshots/ui_collage.png" />
+
+> _Screens: Login, Home Dashboard, Product Details, Cart, and Checkout._
+
+
+
 🏗️ The Engineering Challenge
 -----------------------------
 
@@ -26,19 +37,19 @@ Most e-commerce portfolios build a simple "Nike Store" clone. **Ganga** is diffe
 
 The project follows a **Monorepo** structure ensuring Type Safety and Logic consistency.
 
-```
+```mermaid
 graph TD
     subgraph Clients [Compose Multiplatform]
-        Android[Consumer App (Android)]
-        iOS[Consumer App (iOS)]
-        Web[Admin/Vendor (Wasm)]
-        Desktop[Admin/Vendor (JVM)]
+        Android[Consumer App Android]
+        iOS[Consumer App iOS]
+        Web[Admin/Vendor Wasm]
+        Desktop[Admin/Vendor JVM]
     end
 
     subgraph Logic_Layer [Shared KMP Module]
-        Repo[Repositories]
-        VM[ViewModels]
         Nav[Navigation Graph]
+        VM[ViewModels]
+        Repo[Repositories]
         Net[Ktor Client]
         DI[Koin DI]
     end
@@ -55,13 +66,24 @@ graph TD
         Orders[(Orders)]
     end
 
-    Android & iOS & Web & Desktop --> Nav
+    %% Connections - Broken down for compatibility
+    Android --> Nav
+    iOS --> Nav
+    Web --> Nav
+    Desktop --> Nav
+
     Nav --> VM
     VM --> Repo
     Repo --> Net
     Net -- HTTPS/JSON --> API
+
+    API --> Auth
     API --> Split
     Split --> Orders
+    
+    %% Implicit Data connections (Optional visual aid)
+    Split -.-> Products
+    Split -.-> Users
 
 ```
 
@@ -177,9 +199,9 @@ npm run dev
 
 *   \[x\] Login/Register UI (Compose)
 
-*   \[ \] Home Screen & Product Feed
+*   \[x\] Home Screen & Product Feed
 
-*   \[ \] Product Search
+*   \[x\] Product Search
 
 
 ### Phase 4: Vendor Dashboard
@@ -191,7 +213,11 @@ npm run dev
 
 ### Phase 5: The "Complex" Stuff
 
-*   \[ \] Order Splitting Logic
+*   \[x\] Local Cart (Room Database)
+
+*   \[x\] Checkout UI & Logic
+
+*   \[x\] Order Splitting Logic
 
 *   \[ \] Payment Gateway Sandbox
 

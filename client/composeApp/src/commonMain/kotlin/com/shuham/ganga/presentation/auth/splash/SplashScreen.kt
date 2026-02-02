@@ -43,7 +43,6 @@ fun SplashScreenRoot(
     navigateToOnboarding: () -> Unit,
     navigateToAuth: () -> Unit
 ) {
-    println("SplashScreenRoot called ============================================")
     val splashViewModel = koinViewModel<SplashViewModel>()
 
     val navigationEvent by splashViewModel.navigationEvent.collectAsState()

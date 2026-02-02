@@ -10,33 +10,42 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 object SplashRoute
+
 @Serializable
 object OnboardingRoute
 
 // Graphs
 @Serializable
 object AuthGraph
+
 @Serializable
 object DashboardGraph
 
 // Auth Routes
 @Serializable
 object LoginRoute
+
 @Serializable
 object SignUpRoute
 
 // Dashboard Routes
 @Serializable
 object HomeRoute
+
 @Serializable
 object SearchRoute
+
 @Serializable
 object CartRoute
+
 @Serializable
 object ProfileRoute
 
 @Serializable
 data class ProductDetailRoute(val id: String)
+
+@Serializable
+object CheckoutRoute
 
 // --- Helper for Development ---
 @Composable
