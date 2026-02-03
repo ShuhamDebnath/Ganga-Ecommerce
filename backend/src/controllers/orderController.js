@@ -80,3 +80,38 @@ export const getMyOrders = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Cancel Order
+// @route   PUT /api/v1/orders/:id/cancel
+export const cancelOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+      // Ensure user owns the order
+      if (order.user_id.toString() !== req.user._id.toString()) {
+        return res.status(401).json({ message: 'Not authorized to cancel this order' });
+      }
+
+      // Check if already delivered
+      // (For simplicity, we check the first sub-order, or assume master status)
+      const isDelivered = order.sub_orders.some(sub => sub.shipping_status === 'Delivered');
+      
+      if (isDelivered) {
+        return res.status(400).json({ message: 'Cannot cancel a delivered order' });
+      }
+
+      // Mark all sub-orders as Cancelled
+      order.sub_orders.forEach(sub => {
+        sub.shipping_status = 'Cancelled';
+      });
+
+      const updatedOrder = await order.save();
+      res.json({ success: true, data: updatedOrder });
+    } else {
+      res.status(404).json({ message: 'Order not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -47,6 +47,12 @@ data class ProductDetailRoute(val id: String)
 @Serializable
 object CheckoutRoute
 
+@Serializable
+object OrdersRoute
+
+@Serializable
+object WishlistRoute
+
 // --- Helper for Development ---
 @Composable
 fun PlaceholderScreen(name: String) {

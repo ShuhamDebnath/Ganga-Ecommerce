@@ -6,18 +6,26 @@ import com.shuham.ganga.data.repository.AuthRepositoryImpl
 import com.shuham.ganga.data.repository.CartRepositoryImpl
 import com.shuham.ganga.data.repository.OrderRepositoryImpl
 import com.shuham.ganga.data.repository.ProductRepositoryImpl
+import com.shuham.ganga.data.repository.WishlistRepositoryImpl
 import com.shuham.ganga.domain.repository.AuthRepository
 import com.shuham.ganga.domain.repository.CartRepository
 import com.shuham.ganga.domain.repository.OrderRepository
 import com.shuham.ganga.domain.repository.ProductRepository
+import com.shuham.ganga.domain.repository.WishlistRepository
 import com.shuham.ganga.domain.usecase.AddToCartUseCase
+import com.shuham.ganga.domain.usecase.AddToWishlistUseCase
+import com.shuham.ganga.domain.usecase.CancelOrderUseCase
 import com.shuham.ganga.domain.usecase.ClearCartUseCase
 import com.shuham.ganga.domain.usecase.GetCartItemsUseCase
+import com.shuham.ganga.domain.usecase.GetOrdersUseCase
 import com.shuham.ganga.domain.usecase.GetProductByIdUseCase
 import com.shuham.ganga.domain.usecase.GetProductsUseCase
+import com.shuham.ganga.domain.usecase.GetWishlistUseCase
+import com.shuham.ganga.domain.usecase.IsProductInWishlistUseCase
 import com.shuham.ganga.domain.usecase.LoginUseCase
 import com.shuham.ganga.domain.usecase.PlaceOrderUseCase
 import com.shuham.ganga.domain.usecase.RegisterUseCase
+import com.shuham.ganga.domain.usecase.RemoveFromWishlistUseCase
 import com.shuham.ganga.domain.usecase.UpdateCartQuantityUseCase
 import com.shuham.ganga.presentation.auth.login.LoginViewModel
 import com.shuham.ganga.presentation.auth.onboarding.OnboardingViewModel
@@ -29,6 +37,8 @@ import com.shuham.ganga.presentation.dashboard.tabs.home.HomeViewModel
 import com.shuham.ganga.presentation.dashboard.tabs.profile.ProfileViewModel
 import com.shuham.ganga.presentation.dashboard.tabs.search.SearchViewModel
 import com.shuham.ganga.presentation.detail.ProductDetailViewModel
+import com.shuham.ganga.presentation.orders.OrdersViewModel
+import com.shuham.ganga.presentation.wishlist.WishlistViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
@@ -47,6 +57,7 @@ val appModule = module {
     singleOf(::ProductRepositoryImpl).bind<ProductRepository>()
     singleOf(::CartRepositoryImpl).bind<CartRepository>()
     singleOf(::OrderRepositoryImpl).bind<OrderRepository>()
+    singleOf(::WishlistRepositoryImpl).bind<WishlistRepository>()
 
     // Use Cases
     singleOf( ::GetProductsUseCase)
@@ -58,6 +69,12 @@ val appModule = module {
     singleOf( ::RegisterUseCase)
     singleOf( ::UpdateCartQuantityUseCase)
     singleOf( ::GetProductByIdUseCase)
+    singleOf( ::GetOrdersUseCase)
+    singleOf( ::AddToWishlistUseCase)
+    singleOf( ::CancelOrderUseCase)
+    singleOf( ::GetWishlistUseCase)
+    singleOf( ::RemoveFromWishlistUseCase)
+    singleOf( ::IsProductInWishlistUseCase)
 
     // ViewModels
     viewModelOf(::LoginViewModel)
@@ -70,5 +87,7 @@ val appModule = module {
     viewModelOf(::CartViewModel)
     viewModelOf(::CheckoutViewModel)
     viewModelOf(::ProfileViewModel)
+    viewModelOf(::OrdersViewModel)
+    viewModelOf(::WishlistViewModel)
 }
 

@@ -28,9 +28,13 @@ import com.shuham.ganga.presentation.detail.ProductDetailScreenRoot
 import com.shuham.ganga.presentation.navigation.CartRoute
 import com.shuham.ganga.presentation.navigation.CheckoutRoute
 import com.shuham.ganga.presentation.navigation.HomeRoute
+import com.shuham.ganga.presentation.navigation.OrdersRoute
 import com.shuham.ganga.presentation.navigation.ProductDetailRoute
 import com.shuham.ganga.presentation.navigation.ProfileRoute
 import com.shuham.ganga.presentation.navigation.SearchRoute
+import com.shuham.ganga.presentation.navigation.WishlistRoute
+import com.shuham.ganga.presentation.orders.OrdersScreenRoot
+import com.shuham.ganga.presentation.wishlist.WishlistScreenRoot
 
 
 @Composable
@@ -143,7 +147,10 @@ fun DashboardScreenRoot(
 
             // --- TAB 4: PROFILE ---
             composable<ProfileRoute> {
-                ProfileScreenRoot(onNavigateToAuth = onLogout)
+                ProfileScreenRoot(
+                    onNavigateToOrders = { dashboardNavController.navigate(OrdersRoute) },
+                    onNavigateToWishlist = { dashboardNavController.navigate(WishlistRoute) },
+                    onNavigateToAuth = onLogout)
             }
 
             // --- DETAILS (Full Screen / No Bottom Bar) ---
@@ -174,6 +181,21 @@ fun DashboardScreenRoot(
                         dashboardNavController.navigate(HomeRoute) {
                             popUpTo(HomeRoute) { inclusive = true }
                         }
+                    }
+                )
+            }
+
+            composable<OrdersRoute> {
+                OrdersScreenRoot(
+                    onNavigateBack = { dashboardNavController.popBackStack() } // Or rootNavController depending on where you put it
+                )
+            }
+
+            composable<WishlistRoute> {
+                WishlistScreenRoot(
+                    onNavigateBack = { dashboardNavController.popBackStack() },
+                    onNavigateToProduct = { productId ->
+                        dashboardNavController.navigate(ProductDetailRoute(productId))
                     }
                 )
             }

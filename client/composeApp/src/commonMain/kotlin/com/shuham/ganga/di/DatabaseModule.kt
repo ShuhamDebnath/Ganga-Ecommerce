@@ -8,4 +8,5 @@ val databaseModule = module {
     // Provide the MovieDao by getting the AppDatabase instance
     single { get<AppDatabase>().cartDao() }
     single { get<AppDatabase>().productDao() }
+    single { get<AppDatabase>().wishlistDao()}
 }

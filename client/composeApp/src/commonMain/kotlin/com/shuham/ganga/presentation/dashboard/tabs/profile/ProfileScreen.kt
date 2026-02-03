@@ -40,6 +40,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProfileScreenRoot(
     viewModel: ProfileViewModel = koinViewModel(),
+    onNavigateToOrders: () -> Unit,
+    onNavigateToWishlist: () -> Unit,
     onNavigateToAuth: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
@@ -47,11 +49,16 @@ fun ProfileScreenRoot(
     ProfileScreen(
         state = state,
         onAction = { action ->
-            if (action is ProfileAction.OnLogoutClick) {
-                viewModel.onAction(action)
-                onNavigateToAuth()
-            } else {
-                viewModel.onAction(action)
+
+            when(action){
+                ProfileAction.OnOrdersClick -> onNavigateToOrders()
+                ProfileAction.OnWishlistClick -> onNavigateToWishlist()
+                ProfileAction.OnLogoutClick -> {
+                    viewModel.onAction(action)
+                    onNavigateToAuth()
+                }
+                else -> viewModel.onAction(action)
+
             }
         }
     )
@@ -62,6 +69,44 @@ fun ProfileScreen(
     state: ProfileState,
     onAction: (ProfileAction) -> Unit
 ) {
+    // Local state for dialog visibility
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
+    // Logout Confirmation Dialog
+    if (showLogoutDialog) {
+        AlertDialog(
+            containerColor = Color.White,
+            titleContentColor = Color.Black,
+            textContentColor = Color.Gray,
+            onDismissRequest = { showLogoutDialog = false },
+            title = {
+                Text(text = "Log Out", fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Text("Are you sure you want to log out?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showLogoutDialog = false
+                        onAction(ProfileAction.OnLogoutClick)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFEBEE), contentColor = Color.Red),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("Log Out", fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showLogoutDialog = false }
+                ) {
+                    Text("Cancel", color = Color.Gray, fontWeight = FontWeight.Medium)
+                }
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -172,10 +217,7 @@ fun ProfileScreen(
                 .clip(RoundedCornerShape(16.dp))
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFFFFF0EB),
-                            Color(0xFFFFCCBC)
-                        ) // Light Orange Gradient
+                        colors = listOf(Color(0xFFFFF0EB), Color(0xFFFFCCBC)) // Light Orange Gradient
                     )
                 )
                 .clickable { onAction(ProfileAction.OnSwitchToVendorClick) }
@@ -233,33 +275,21 @@ fun ProfileScreen(
                     subtitle = "Check order status",
                     onClick = { onAction(ProfileAction.OnOrdersClick) }
                 )
-                HorizontalDivider(
-                    color = Color(0xFFF0F0F0),
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                HorizontalDivider(color = Color(0xFFF0F0F0), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 ProfileOptionItem(
                     icon = Res.drawable.ic_favorite,
                     title = "Wishlist",
                     subtitle = "Your favorite items",
                     onClick = { onAction(ProfileAction.OnWishlistClick) }
                 )
-                HorizontalDivider(
-                    color = Color(0xFFF0F0F0),
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                HorizontalDivider(color = Color(0xFFF0F0F0), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 ProfileOptionItem(
                     icon = Res.drawable.ic_location_on,
                     title = "Addresses",
                     subtitle = "Manage delivery locations",
                     onClick = { onAction(ProfileAction.OnAddressClick) }
                 )
-                HorizontalDivider(
-                    color = Color(0xFFF0F0F0),
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                HorizontalDivider(color = Color(0xFFF0F0F0), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 ProfileOptionItem(
                     icon = Res.drawable.ic_wallet,
                     title = "Payment Methods",
@@ -287,26 +317,18 @@ fun ProfileScreen(
                     title = "Help Center",
                     onClick = { onAction(ProfileAction.OnHelpClick) }
                 )
-                HorizontalDivider(
-                    color = Color(0xFFF0F0F0),
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                HorizontalDivider(color = Color(0xFFF0F0F0), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 ProfileOptionItem(
                     icon = Res.drawable.ic_lock,
                     title = "Privacy Policy",
                     onClick = { onAction(ProfileAction.OnPrivacyPolicyClick) }
                 )
-                HorizontalDivider(
-                    color = Color(0xFFF0F0F0),
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                HorizontalDivider(color = Color(0xFFF0F0F0), thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 // Logout Item
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onAction(ProfileAction.OnLogoutClick) }
+                        .clickable { showLogoutDialog = true } // Trigger Dialog
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

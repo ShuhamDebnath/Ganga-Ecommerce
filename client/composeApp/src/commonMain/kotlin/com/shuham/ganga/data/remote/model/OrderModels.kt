@@ -3,7 +3,6 @@ package com.shuham.ganga.data.remote.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-// --- REQUEST (What we send to Backend) ---
 @Serializable
 data class OrderRequest(
     val orderItems: List<OrderItemDto>,
@@ -32,7 +31,12 @@ data class ShippingAddressDto(
     val phone: String
 )
 
-// --- RESPONSE (What we get back) ---
+@Serializable
+data class OrderListResponse(
+    val success: Boolean,
+    val data: List<OrderDataDto>
+)
+
 @Serializable
 data class OrderResponse(
     val success: Boolean,
@@ -44,5 +48,15 @@ data class OrderResponse(
 data class OrderDataDto(
     @SerialName("_id") val id: String,
     val total_price: Double,
-    val is_paid: Boolean
+    val is_paid: Boolean,
+    @SerialName("createdAt") val createdAt: String? = null,
+    val sub_orders: List<SubOrderDto> = emptyList()
+) {
+    val status: String
+        get() = sub_orders.firstOrNull()?.shipping_status ?: "Pending"
+}
+
+@Serializable
+data class SubOrderDto(
+    val shipping_status: String
 )

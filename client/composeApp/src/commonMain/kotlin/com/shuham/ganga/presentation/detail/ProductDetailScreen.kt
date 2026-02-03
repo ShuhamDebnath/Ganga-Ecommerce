@@ -26,6 +26,7 @@ import ganga.composeapp.generated.resources.Res
 import ganga.composeapp.generated.resources.ic_arrow_back
 import ganga.composeapp.generated.resources.ic_bag
 import ganga.composeapp.generated.resources.ic_favorite
+import ganga.composeapp.generated.resources.ic_favorite_fill
 import ganga.composeapp.generated.resources.ic_share
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -197,10 +198,14 @@ fun ProductDetailScreen(
                             lineHeight = 30.sp
                         )
                         IconButton(onClick = { onAction(ProductDetailAction.OnToggleWishlist) }) {
+                            // TOGGLE ICON LOGIC
+                            val icon = if (state.isWishlisted) Res.drawable.ic_favorite_fill else Res.drawable.ic_favorite
+                            val tint = if (state.isWishlisted) Color.Red else Color.Gray
+
                             Icon(
-                                painter = painterResource(Res.drawable.ic_favorite),
+                                painter = painterResource(icon),
                                 contentDescription = "Wishlist",
-                                tint = Color.Gray
+                                tint = tint
                             )
                         }
                     }
